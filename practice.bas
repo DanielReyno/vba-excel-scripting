@@ -13,7 +13,7 @@ Sub custom_macro()
     listado_length = UBound(listado) - LBound(listado) + 1
     
     
-    Call demoFunction(hoja)
+    Call findAKeyword(hoja)
     
     'Cells(10, 10).value = "Something"
     'Range("A1", "G30").Activate
@@ -79,10 +79,24 @@ Public Function longitudDeUnaColumna(context As Worksheet) As Integer
 End Function
 
 
-Public Function demoFunction(context As Worksheet)
-    Dim variable As Range
+Public Function findAKeyWord(context As Worksheet)
+    Dim variable As Variant
+    Dim firstAddress As String
+    'Set variable = context.Cells.Find("Something")
     
-    Set variable = context.Cells.FindNext("Something")
-    MsgBox variable
-    Exit Function
+    With context.Cells
+        Set variable = .Find("Something")
+        If Not variable Is Nothing Then
+            firstAddress = variable.Address
+            Do
+                Set variable = .FindNext(variable)
+                MsgBox variable
+                
+                If variable.Address = firstAddress Then
+                    Exit Do
+                End If
+            Loop While Not variable Is Nothing
+        End If
+    End With
 End Function
+
